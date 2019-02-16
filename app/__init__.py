@@ -1,7 +1,11 @@
 from flask import Flask
-from .config import DevConfig
-
+from app import views
+from app import error
+from config import config_options
 from flask_bootstrap import Bootstrap
+
+bootstrap = Bootstrap()
+
 
 # Initialising application
 app = Flask (__name__,instance_relative_config = True)

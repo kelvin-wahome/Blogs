@@ -1,7 +1,6 @@
-from . import db
+from . import db,login_manager
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
-from . import login_manager
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -31,3 +30,15 @@ class User(UserMixin,db.Model):
 
     def __repr__(self):
         return f'User {self.username}'
+
+
+class Posts(db.Model):
+
+   id = db.Column(db.Integer, primary_key=True)
+   title = db.Column(db.String, nullable=False)
+   content = db.Column(db.String, nullable=False)
+   image = db.Column(db.String, default='post.jpg')
+   time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+   writer = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+   comments = db.relationship('Comments', backref='parent_post', lazy=True)
+   link = db.Column(db.String, nullable=False, unique=True)

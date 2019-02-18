@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 bootstrap = Bootstrap()
-db = SQlAlchemy()
+db = SQLAlchemy()
 
 def create_app(config_name):
     # Initialising application

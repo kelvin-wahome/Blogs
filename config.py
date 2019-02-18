@@ -5,7 +5,7 @@ class Config:
     General configuration parent class
     '''
     SECRET_KEY = os.environ.get('Homes')
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://blackrose:alisak6996@localhost/blogs'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://blackrose:callofduty@localhost/blogs'
 
 
 

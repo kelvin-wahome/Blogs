@@ -42,3 +42,29 @@ class Posts(db.Model):
    writer = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
    comments = db.relationship('Comments', backref='parent_post', lazy=True)
    link = db.Column(db.String, nullable=False, unique=True)
+   def save_post(self):
+      '''
+      Adds and commits post instance to database
+      db.session.add(post)
+      db.session.commit()
+      '''
+      db.session.add(self)
+      db.session.commit()
+
+   def delete_post(self):
+      '''
+      Deletes and commits post instance from database
+      db.session.add(post)
+      db.session.commit()
+      '''
+      db.session.delete(self)
+      db.session.commit()
+
+   def __repr__(self):
+      return f"Posts('{self.title}', '{self.content}', '{self.time}')"
+
+
+    @classmethod
+      def get_post(cls,art_link):
+      post = Posts.query.filter_by(link=art_link).first()
+      return po

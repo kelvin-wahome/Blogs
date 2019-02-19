@@ -4,25 +4,25 @@ from wtforms.validators import Required,Email,EqualTo
 from wtforms import StringField, PasswordField, SubmitField, ValidationError, BooleanField, RadioField, TextAreaField, IntegerField, SelectField
 
 
-class Blog(FlaskForm):
+class Blogform(FlaskForm):
     '''
     Blog post form.
     '''
     title = StringField('Title ')
-    description = TextAreaField('Blog Content')
+    content = TextAreaField('Blog Content')
     submit = SubmitField('Publish')
 
 
-class Comment(FlaskForm):
+class Commentform(FlaskForm):
     '''
     Comment form.
     '''
     name = StringField('Name', validators=[Required()])
-    content = TextAreaField('Add comment', validators=[Required()])
+    description = TextAreaField('Add comment', validators=[Required()])
     submit = SubmitField()
 
 
 class UpdateForm(FlaskForm):
     title = StringField('Title for you Blog', validators=[Required()])
-    description = TextAreaField('Blog Content', validators=[Required()])
+    content= TextAreaField('Blog Content', validators=[Required()])
     submit = SubmitField('Edit')

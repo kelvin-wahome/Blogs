@@ -1,13 +1,16 @@
 from flask import render_template,request,redirect,url_for,abort
-from flask_login import login_required
+from flask_login import login_required,current_user
 from ..models import User,Blog,Comment
 import os
 import requests
 import json
 # from flask.views import View, MethodView
 from .. import db, photos
-from .forms import Blog,Comment
+from .forms import Blogform,Commentform,UpdateForm
 from . import main
+from datetime import datetime
+
+
 
 #views
 @main.route ('/')
@@ -31,7 +34,7 @@ def view_blog(blog_id):
     blog = Blog.query.filter_by(id=blog_id).first()
     random = requests.get('http://quotes.stormconsultancy.co.uk/random.json').json()
 
-    form = CommentForm()
+    form = Commentform()
     if form.validate_on_submit():
         name = form.name.data
         content = form.content.data
@@ -45,7 +48,7 @@ def view_blog(blog_id):
 @main.route('/blogs/new/', methods=['GET', 'POST'])
 @login_required
 def new_blog():
-    form = BlogForm()
+    form = Blogform()
     if form.validate_on_submit():
         content = form.content.data
         title = form.title.data
@@ -56,7 +59,7 @@ def new_blog():
                           date_posted=date_posted)
         db.session.add(new_blog)
         db.session.commit()
-        flash('New blog post created','success')
+        # flash('New blog post created','success')
 
         return redirect(url_for('main.blog'))
     return render_template('new.html', form=form)
@@ -80,14 +83,13 @@ def update_blog(blog_id):
         blog.title = form.title.data
         blog.content = form.content.data
         db.session.commit()
-        flash('Your post has been updated', 'success')
         return redirect(url_for('main.blog'))
     elif request.method == 'GET':
         form.title.data = blog.title
         form.content.data = blog.content
 
 
-    return render_template('new_blog.html', form=form)
+    return render_template('new.html', form=form)
 
 
 @main.route('/<int:blog_id>/delete comments')

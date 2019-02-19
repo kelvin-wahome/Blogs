@@ -42,7 +42,7 @@ Follow the following commands to run the project
 
 
 ## Known Bugs
-None known at the moment.
+No bugs known.
 
 ## Technologies Used
 * Python

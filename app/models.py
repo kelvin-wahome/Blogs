@@ -4,9 +4,7 @@ from flask_login import UserMixin
 from datetime import datetime
 
 
-@login_manager.user_loader
-def load_user(user_id):
-   return User.query.get(int(user_id))
+
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -40,7 +38,7 @@ class Blog(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    description = db.Column(db.String(), index=True, nullable=False)
+    content = db.Column(db.String(), index=True, nullable=False)
     title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.String)
     comments = db.relationship('Comment', backref='pitch', lazy='dynamic')
@@ -55,7 +53,7 @@ class Blog(db.Model):
         return Comment.query.filter_by(blog_id=self.id)
 
     def __repr__(self):
-        return f'Blog {self.description}'
+        return f'Blog {self.content}'
 
 
 class Comment(db.Model):
@@ -81,3 +79,8 @@ class Comment(db.Model):
 
     def __repr__(self):
       return f"Comment('{self.comment}')"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+   return User.query.get(int(user_id))

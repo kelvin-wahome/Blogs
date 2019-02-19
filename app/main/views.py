@@ -2,11 +2,11 @@ from flask import render_template,request,redirect,url_for,abort
 from flask_login import login_required
 from ..models import User,Blog,Comment
 import os
+import requests
+import json
+from flask.views import View, MethodView
 from .. import db, photos
-
 from .forms import Blog,Comment,Bio
-
-
 from . import main
 
 #views
@@ -69,6 +69,38 @@ def delete(blog_id):
     db.session.commit()
 
     return redirect(url_for('main.blog'))
+
+
+@main.route("/update/<blog_id>", methods= ['GET', 'POST'])
+@login_required
+def update_blog(blog_id):
+    blog = Blog.query.filter_by(id = blog_id).first()
+    form = UpdateForm()
+    if form.validate_on_submit():
+        blog.title = form.title.data
+        blog.description = form.description.data
+        db.session.commit()
+        flash('Your post has been updated', 'success')
+        return redirect(url_for('main.blog'))
+    elif request.method == 'GET':
+        form.title.data = blog.title
+        form.description.data = blog.description
+
+
+    return render_template('new_blog.html', form=form)
+
+
+@main.route('/<int:blog_id>/delete comments')
+@login_required
+def delete_comment(blog_id):
+    comment = Comment.query.filter_by(blog_id=blog_id).first()
+    blog_id = comment.blog_id
+
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect(url_for('main.view_blog', blog_id=blog_id))
+
+
 
 
 @main.route('/user/<uname>')

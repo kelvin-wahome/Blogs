@@ -1,7 +1,7 @@
 from . import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-
+from datetime import datetime
 
 
 
@@ -61,11 +61,10 @@ class Posts(db.Model):
    def __repr__(self):
       return f"Posts('{self.title}', '{self.content}', '{self.time}')"
 
-
-    @classmethod
-      def get_post(cls,art_link):
-      post = Posts.query.filter_by(link=art_link).first()
-      return post
+    # @classmethod
+    # def get_post(cls,art_link):
+    #     post = Posts.query.filter_by(link=art_link).first()
+    #     return post
 
 
 
@@ -100,4 +99,4 @@ class Comments(db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-   return Users.query.get(int(user_id)
+   return Users.query.get(int(user_id))

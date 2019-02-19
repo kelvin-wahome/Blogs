@@ -4,6 +4,9 @@ from flask_login import UserMixin
 from datetime import datetime
 
 
+@login_manager.user_loader
+def load_user(user_id):
+   return User.query.get(int(user_id))
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -29,62 +32,45 @@ class User(UserMixin, db.Model):
         return f'User {self.username}'
 
 
-class Posts(db.Model):
+class Blog(db.Model):
+    '''
+    Class blog that hold all blog data
+    '''
+    __tablename__ = 'blogs'
 
-   id = db.Column(db.Integer, primary_key=True)
-   title = db.Column(db.String, nullable=False)
-   content = db.Column(db.String, nullable=False)
-   image = db.Column(db.String, default='post.jpg')
-   time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-   writer = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-   comments = db.relationship('Comments', backref='parent_post', lazy=True)
-   link = db.Column(db.String, nullable=False, unique=True)
-
-   def save_post(self):
-      '''
-      Adds and commits post instance to database
-      db.session.add(post)
-      db.session.commit()
-      '''
-      db.session.add(self)
-      db.session.commit()
-
-   def delete_post(self):
-      '''
-      Deletes and commits post instance from database
-      db.session.add(post)
-      db.session.commit()
-      '''
-      db.session.delete(self)
-      db.session.commit()
-
-   def __repr__(self):
-      return f"Posts('{self.title}', '{self.content}', '{self.time}')"
-
-    # @classmethod
-    # def get_post(cls,art_link):
-    #     post = Posts.query.filter_by(link=art_link).first()
-    #     return post
+    id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    description = db.Column(db.String(), index=True, nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    date_posted = db.Column(db.String)
+    comments = db.relationship('Comment', backref='pitch', lazy='dynamic')
 
 
+    @classmethod
+    def get_blogs(cls, id):
+        blogs = Blog.query.order_by(blog_id=id).desc().all()
+        return blogs
 
-class Comments(db.Model):
+    def get_post_comments(self):
+        return Comment.query.filter_by(blog_id=self.id)
 
-   id = db.Column(db.Integer, primary_key=True)
-   name = db.Column(db.String(60), nullable=False)
-   comment = db.Column(db.String(480), nullable=False)
-   posted_on = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    def __repr__(self):
+        return f'Blog {self.description}'
 
-   def save_comment(self):
-      '''
-      Adds and commits comment instance to database
-      db.session.add(comment)
-      db.session.commit()
-      '''
-      db.session.add(self)
-      db.session.commit()
 
-   def delete_comment(self):
+class Comment(db.Model):
+    __tablename__ = 'comments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    blog_id = db.Column(db.Integer, db.ForeignKey('blogs.id'), nullable=False)
+    description = db.Column(db.Text)
+
+    def save_comment(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete_comment(self):
       '''
       Deletes and commits comment instance from database
       db.session.add(comment)
@@ -93,10 +79,5 @@ class Comments(db.Model):
       db.session.delete(self)
       db.session.commit()
 
-   def __repr__(self):
-      return f"Comments('{self.comment}')"
-
-
-@login_manager.user_loader
-def load_user(user_id):
-   return Users.query.get(int(user_id))
+    def __repr__(self):
+      return f"Comment('{self.comment}')"

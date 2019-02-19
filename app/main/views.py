@@ -4,9 +4,9 @@ from ..models import User,Blog,Comment
 import os
 import requests
 import json
-from flask.views import View, MethodView
+# from flask.views import View, MethodView
 from .. import db, photos
-from .forms import Blog,Comment,Bio
+from .forms import Blog,Comment
 from . import main
 
 #views
@@ -34,8 +34,8 @@ def view_blog(blog_id):
     form = CommentForm()
     if form.validate_on_submit():
         name = form.name.data
-        description = form.description.data
-        new_comment = Comment(name=name, description=description,blog_id=blog.id)
+        content = form.content.data
+        new_comment = Comment(name=name, content=content,blog_id=blog.id)
         new_comment.save_comment()
         return redirect(url_for('main.view_blog', blog_id=blog.id))
     comments = Comment.query.filter_by(blog_id=blog.id)
@@ -47,12 +47,12 @@ def view_blog(blog_id):
 def new_blog():
     form = BlogForm()
     if form.validate_on_submit():
-        description = form.description.data
+        content = form.content.data
         title = form.title.data
         owner_id = current_user
         date_posted = str(datetime.now())
         print(current_user._get_current_object().id)
-        new_blog = Blog(owner_id=current_user._get_current_object().id, title=title, description=description,
+        new_blog = Blog(owner_id=current_user._get_current_object().id, title=title, content=content,
                           date_posted=date_posted)
         db.session.add(new_blog)
         db.session.commit()
@@ -78,13 +78,13 @@ def update_blog(blog_id):
     form = UpdateForm()
     if form.validate_on_submit():
         blog.title = form.title.data
-        blog.description = form.description.data
+        blog.content = form.content.data
         db.session.commit()
         flash('Your post has been updated', 'success')
         return redirect(url_for('main.blog'))
     elif request.method == 'GET':
         form.title.data = blog.title
-        form.description.data = blog.description
+        form.content.data = blog.content
 
 
     return render_template('new_blog.html', form=form)

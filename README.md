@@ -4,8 +4,8 @@ https://nimo-blog.herokuapp.com/
 ## By Wairimu Maina
 A student at Moringa School and an aspiring software developer.
 
-## Description
-Blog is a web application that users can view other blog posts, comment on the blogs and sign in as writers. Writers are able to post new blog post, edit existing posts, delete posts and comments. Random quote is also displayed on every blog
+## Description of application
+Blog is a web application that users can use to view other blog posts, comment on the blogs and sign in as writers. Writers will be able to post new blog posts, edit existing posts, delete posts and comments. Random quote is also displayed on every blog.
 
 ## Specifications
 * Users can view most recent blog posts
@@ -42,7 +42,7 @@ Follow the following commands to run the project
 
 
 ## Known Bugs
-No bugs known.
+No bugs discovered.
 
 ## Technologies Used
 * Python
